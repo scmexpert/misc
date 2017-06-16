@@ -1,0 +1,66 @@
+Setup CF (Cloud Foundry)
+
+** UPDATE ** Probably the easiest way is PCF Dev https://pivotal.io/pcf-dev BOSH Lite gives you more options, but for most people just trying out CF I would recommend PCF Dev.
+
+Easiest way is to deploy CF using BOSH Lite. You will probably need 16gb of ram.
+
+Install Vagrant
+
+gem install vagrant
+Download BOSH Lite
+
+git clone https://github.com/cloudfoundry/bosh-lite
+Start up BOSH Lite
+
+cd bosh-lite
+vagrant up --provider=virtualbox
+Target Bosh Lite
+
+bosh target 192.168.50.4 lite
+username/password: admin/admin
+
+Add needed routes
+
+bin/add-route
+Download the Stemcell
+
+wget https://s3.amazonaws.com/bosh-warden-stemcells/bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz
+Install BOSH CLI
+
+gem install bosh_cli --no-ri --no-rdoc
+Upload the stemcell that BOSH Lite CF uses
+
+bosh upload stemcell bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz
+Download CF
+
+git clone https://github.com/cloudfoundry/cf-release.git --recursive
+Generate the CF BOSH Lite manifest
+
+scripts/generate-bosh-lite-dev-manifest
+Create, Upload and Deploy release
+
+bosh create release --force && bosh upload release && bosh -n deploy
+^^^ This will take awhile ^^^
+
+Work with CF
+
+Install CF CLI
+See instructions here:
+https://github.com/cloudfoundry/cli
+
+Login to CF
+
+cf login -a https://api.bosh-lite.com --skip-ssl-validation -u admin -p admin
+Create an org
+
+cf create-org org
+Create a space
+
+cf create-space space -o org
+Target org and space
+
+cf target -o org -s space
+Push App
+
+cf push
+That should do it!
