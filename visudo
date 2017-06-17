@@ -1,0 +1,2 @@
+ansible ALL=NOPASSWD: ALL
+kiru ALL=NOPASSWD: ALL
